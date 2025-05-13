@@ -3,7 +3,6 @@
 #include "cpu.h"
 #include <algorithm>
 #include "parser.h"
-#include "create_file.h"
 
 
 using namespace std;
