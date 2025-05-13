@@ -4,6 +4,7 @@
 #include <ranges>
 #include <exception>
 #include <fstream>
+#include <string>
 
 #include "cache.h"
 #include "registers.h"
@@ -21,9 +22,9 @@ private:
 
     int bin_to_int(string bin) {
         int result = 0;
-        for (int i = 0; i < bin.length(); i++) {
+        for (size_t i = 0; i < bin.size(); i++) {
             if (bin[i] == '1') {
-                result += (1 << (bin.length() - i - 1));
+                result += (1 << (bin.size() - i - 1));
             }
         }
         return result;
@@ -100,7 +101,7 @@ private:
         int inds = bin_to_int(regs);
         int ind = bin_to_int(reg);
         value = sext(value, 12);
-        registers[ind] = registers[ind] | value;
+        registers[ind] = registers[inds] | value;
         pc += 4;
     }
 
@@ -109,7 +110,7 @@ private:
         int inds = bin_to_int(regs);
         int ind = bin_to_int(reg);
         value = sext(value, 12);
-        registers[ind] = registers[ind] & value;
+        registers[ind] = registers[inds] & value;
         pc += 4;
     }
 
@@ -117,7 +118,7 @@ private:
         int value = bin_to_int(shamt);
         int inds = bin_to_int(regs);
         int ind = bin_to_int(reg);
-        registers[ind] = registers[ind] << value;
+        registers[ind] = registers[inds] << value;
         pc += 4;
     }
 

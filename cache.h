@@ -36,7 +36,6 @@ struct CacheLine {
 class Cache {
 private:
     int time_ = 1;
-    bool is_plru_ = false;
 
     int get_tag(int address) {
         return (address & ((1 << 17) - (1 << 10))) >> 10;
@@ -129,6 +128,7 @@ private:
     vector<unordered_map<int, CacheLine> > cache_;
 
     Memory &memory_;
+    bool is_plru_ = false;
 
     int data_hit_ = 0;
     int data_attempts_ = 0;
@@ -249,7 +249,7 @@ public:
     }
 
     void load_all() {
-        for (int i = 0; i < cache_.size(); ++i) {
+        for (size_t i = 0; i < cache_.size(); ++i) {
             for (auto& [k, j] : cache_[i]) {
                 if (j.dirty) {
                     int address = (k << 10) + (i << 6);

@@ -26,20 +26,20 @@ public:
     }
 
     void load_instraction(int address, vector<byte>& instr) {
-        for (int i = 0; i < instr.size(); i++) {
+        for (size_t i = 0; i < instr.size(); i++) {
             load_byte(address + i, instr[i]);
         }
     }
 
     void load_cache_line(int address, const vector<byte> &line) {
-        for (int i = 0; i < CACHE_LINE_SIZE; i++) {
+        for (size_t i = 0; i < CACHE_LINE_SIZE; i++) {
             load_byte(address + i, line[i]);
         }
     }
 
     vector<byte> read_cache_line(int address) {
         vector<byte> result;
-        for (int i = 0; i < CACHE_LINE_SIZE; i++) {
+        for (size_t i = 0; i < CACHE_LINE_SIZE; i++) {
             result.push_back(read_byte(address + i));
         }
         return result;
@@ -51,6 +51,6 @@ public:
         for (int i = 1; i < 32; ++i) {
             file.write(reinterpret_cast<char*>(&registers[i]), 4);
         }
-        file.write(reinterpret_cast<char*>(memory_.data()), size);
+        file.write(reinterpret_cast<char*>(memory_.data() + start_address), size);
     }
 };
