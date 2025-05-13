@@ -51,6 +51,8 @@ public:
         for (int i = 1; i < 32; ++i) {
             file.write(reinterpret_cast<char*>(&registers[i]), 4);
         }
+        file.write(reinterpret_cast<char*>(&start_address), 4);
+        file.write(reinterpret_cast<char*>(&size), 4);
         file.write(reinterpret_cast<char*>(memory_.data() + start_address), size);
     }
 };
