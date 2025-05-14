@@ -307,7 +307,7 @@ private:
         int ind1 = bin_to_int(reg1);
         int ind2 = bin_to_int(reg2);
         value = sext(value, 12);
-        cache_.write_one_byte(registers[ind1] + value, byte(registers[ind2]));
+        cache_.write_data(registers[ind1] + value, registers[ind2], 1);
         pc += 4;
     }
 
@@ -316,7 +316,7 @@ private:
         int ind1 = bin_to_int(reg1);
         int ind2 = bin_to_int(reg2);
         value = sext(value, 12);
-        cache_.write_two_bytes(registers[ind1] + value, short(registers[ind2]));
+        cache_.write_data(registers[ind1] + value, registers[ind2], 2);
         pc += 4;
     }
 
@@ -325,7 +325,7 @@ private:
         int ind1 = bin_to_int(reg1);
         int ind2 = bin_to_int(reg2);
         value = sext(value, 12);
-        cache_.write_four_bytes(registers[ind1] + value, registers[ind2]);
+        cache_.write_data(registers[ind1] + value, registers[ind2], 4);
         pc += 4;
     }
 
@@ -349,7 +349,7 @@ private:
         registers[ind] = t;
     }
 
-    void beq(string offset, string reg1, string reg2) {
+    void beq(string offset, string reg2, string reg1) {
         int value = bin_to_int(offset);
         value <<= 1;
         int ind1 = bin_to_int(reg1);
@@ -363,7 +363,7 @@ private:
         }
     }
 
-    void bne(string offset, string reg1, string reg2) {
+    void bne(string offset, string reg2, string reg1) {
         int value = bin_to_int(offset);
         value <<= 1;
         int ind1 = bin_to_int(reg1);
@@ -377,7 +377,7 @@ private:
         }
     }
 
-    void blt(string offset, string reg1, string reg2) {
+    void blt(string offset, string reg2, string reg1) {
         int value = bin_to_int(offset);
         value <<= 1;
         int ind1 = bin_to_int(reg1);
@@ -391,7 +391,7 @@ private:
         }
     }
 
-    void bge(string offset, string reg1, string reg2) {
+    void bge(string offset, string reg2, string reg1) {
         int value = bin_to_int(offset);
         value <<= 1;
         int ind1 = bin_to_int(reg1);
@@ -405,7 +405,7 @@ private:
         }
     }
 
-    void bltu(string offset, string reg1, string reg2) {
+    void bltu(string offset, string reg2, string reg1) {
         int value = bin_to_int(offset);
         value <<= 1;
         int ind1 = bin_to_int(reg1);
@@ -419,7 +419,7 @@ private:
         }
     }
 
-    void bgeu(string offset, string reg1, string reg2) {
+    void bgeu(string offset, string reg2, string reg1) {
         int value = bin_to_int(offset);
         value <<= 1;
         int ind1 = bin_to_int(reg1);
@@ -512,6 +512,7 @@ public:
     }
 
     void start() {
+        int ra = registers[1];
         while (pc != ra && !stop_) {
             int comand = cache_.read_instruction(pc);
             pars_command(make_comand(comand));

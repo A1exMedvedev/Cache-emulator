@@ -103,7 +103,7 @@ private:
         int key = -1;
         int ma = 1e9;
         for (auto &[i, j]: cache_[index]) {
-            if (j.last_plru == false && ma < j.index_plru) {
+            if (j.last_plru == false && ma > j.index_plru) {
                 key = i;
                 ma = j.index_plru;
             }
@@ -118,11 +118,12 @@ private:
             int load_address = (key << 10) + (index << 6);
             memory_.load_cache_line(load_address, cache_[index][key].data);
         }
+        int ind = cache_[index][key].index_plru;
         cache_[index].erase(key);
         cache_[index][tag] = CacheLine();
         cache_[index][tag].data = memory_.read_cache_line(address);
-        cache_[index][tag].valid = true;
-        cache_[index][tag].index_plru = cache_[index].size() - 1;
+        cache_[index][tag].valid = true;    
+        cache_[index][tag].index_plru = ind;
     }
 
     vector<unordered_map<int, CacheLine> > cache_;
@@ -140,39 +141,32 @@ public:
         cache_.resize(CACHE_SET_COUNT);
     }
 
-    void write_one_byte(int address, byte value, bool first = true) {
+
+    void write_data(int address, int value, int size) {
         int tag = get_tag(address);
         int index = get_index(address);
         int offset = get_offset(address);
         bool hitted = is_hit(address);
-        data_hit_ += (hitted && first);
-        data_attempts_ += first;
+        data_hit_ += hitted;
+        data_attempts_++;
         if (hitted) {
-            cache_[index][tag].data[offset] = value;
-            time_ += first;
-            cache_[index][tag].last_upd = time_;
+            for (int i = 0; i < size; ++i) {
+                cache_[index][tag].data[offset + i] = byte(value);
+                value >>= 8;
+            }
+            cache_[index][tag].last_upd = time_++;
             cache_[index][tag].dirty = true;
             cache_[index][tag].last_plru = true;
             return;
         }
         get_new_cache(address);
-        cache_[index][tag].data[offset] = value;
-        time_ += first;
-        cache_[index][tag].last_upd = time_;
+        for (int i = 0; i < size; ++i) {
+            cache_[index][tag].data[offset + i] = byte(value);
+            value >>= 8;
+        }
+        cache_[index][tag].last_upd = time_++;
         cache_[index][tag].dirty = true;
         cache_[index][tag].last_plru = true;
-    }
-
-    void write_two_bytes(int address, short value) {
-        write_one_byte(address, byte(value));
-        write_one_byte(address + 1, byte(value >> 8), false);
-    }
-
-    void write_four_bytes(int address, int value) {
-        write_one_byte(address, byte(value));
-        write_one_byte(address + 1, byte(value >> 8), false);
-        write_one_byte(address + 2, byte(value >> 16), false);
-        write_one_byte(address + 3, byte(value), false);
     }
 
     int read_data(int address, int size) {
@@ -255,7 +249,7 @@ public:
                     int address = (k << 10) + (i << 6);
                     memory_.load_cache_line(address, j.data);
                 }
-            }
+            }   
         }
     }
 

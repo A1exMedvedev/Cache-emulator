@@ -72,7 +72,6 @@ int main(int argc, char** argv) {
     load_fragment(input_file, cpu1);
 
     int pc_c = pc;
-    int ra_c = ra;
     unordered_map<int, int> registers_c = registers;
 
     try {
@@ -84,7 +83,6 @@ int main(int argc, char** argv) {
     }
 
     pc = pc_c;
-    ra = ra_c;
     registers = registers_c;
 
     CPU cpu2(1);
