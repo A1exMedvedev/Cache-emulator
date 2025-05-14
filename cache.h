@@ -180,7 +180,7 @@ public:
         if (hitted) {
             for (int i = 0; i < size; i++) {
                 ans <<= 8;
-                ans += (int) cache_[index][tag].data[offset + 3 - i];
+                ans += (int) cache_[index][tag].data[offset + size - i];
             }
             cache_[index][tag].last_upd = time_++;
             cache_[index][tag].last_plru = true;
@@ -189,7 +189,7 @@ public:
         get_new_cache(address);
         for (int i = 0; i < size; i++) {
             ans <<= 8;
-            ans += (int) cache_[index][tag].data[offset + 3 - i];
+            ans += (int) cache_[index][tag].data[offset + size - i];
         }
         cache_[index][tag].last_upd = time_++;
         cache_[index][tag].last_plru = true;
