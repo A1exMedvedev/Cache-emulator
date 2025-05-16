@@ -73,13 +73,15 @@ private:
         cache_[index][tag].data = memory_.read_cache_line(address);
         cache_[index][tag].valid = true;
         cache_[index][tag].index_plru = cache_[index].size() - 1;
-        bool flag = 1;
-        for (auto& [i, j] : cache_[index]) {
-            if (i != tag) flag &= j.last_plru;
-        }
-        if (flag) {
+        if (cache_[index].size() == CACHE_WAY) {
+            bool flag = 1;
             for (auto& [i, j] : cache_[index]) {
-                if (i != tag) j.last_plru = 0;
+                if (i != tag) flag &= j.last_plru;
+            }
+            if (flag) {
+                for (auto& [i, j] : cache_[index]) {
+                    if (i != tag) j.last_plru = 0;
+                }
             }
         }
     }
