@@ -73,6 +73,15 @@ private:
         cache_[index][tag].data = memory_.read_cache_line(address);
         cache_[index][tag].valid = true;
         cache_[index][tag].index_plru = cache_[index].size() - 1;
+        bool flag = 1;
+        for (auto& [i, j] : cache_[index]) {
+            if (i != tag) flag &= j.last_plru;
+        }
+        if (flag) {
+            for (auto& [i, j] : cache_[index]) {
+                if (i != tag) j.last_plru = 0;
+            }
+        }
     }
 
     void get_lru(int address) {
@@ -106,12 +115,6 @@ private:
             if (j.last_plru == false && ma > j.index_plru) {
                 key = i;
                 ma = j.index_plru;
-            }
-        }
-        if (key == -1) {
-            for (auto &[i, j]: cache_[index]) {
-                if (j.index_plru == 0) key = i;
-                j.last_plru = false;
             }
         }
         if (cache_[index][key].dirty) {
