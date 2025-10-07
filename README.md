@@ -77,15 +77,15 @@ N байт – фрагмент оперативной памяти
 |:-----------------------:|:--------------------------------------:|
 |Конфигурация кэша        | look-through write-back write-allocate |
 |Политика вытеснения кэша | LRU и bit-pLRU                         |
-|MEMORY_SIZE              | 262144                                 |
-|ADDRESS_LEN              | 18                                     |
-|CACHE_TAG_LEN            | 8                                      |
-|CACHE_INDEX_LEN          | 5                                      |
-|CACHE_OFFSET_LEN         | 5                                      |
+|MEMORY_SIZE              | 131072                                 |
+|ADDRESS_LEN              | 17                                     |
+|CACHE_TAG_LEN            | 7                                      |
+|CACHE_INDEX_LEN          | 4                                      |
+|CACHE_OFFSET_LEN         | 6                                      |
 |CACHE_SIZE               | 4096                                   |
-|CACHE_LINE_SIZE          | 32                                     |
-|CACHE_LINE_COUNT         | 128                                    |
-|CACHE_SET_COUNT          | 32                                     |
+|CACHE_LINE_SIZE          | 64                                     |
+|CACHE_LINE_COUNT         | 64                                    |
+|CACHE_SET_COUNT          | 16                                     |
 |CACHE_WAY                | 4                                      |
 
 ### task.bin
